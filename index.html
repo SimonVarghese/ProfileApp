@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Profile page</title>
+    <link rel="stylesheet" href="style.css" media="screen" title="no title">
+  </head>
+  <body>
+    <div id="profile-wrapper"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js" charset="utf-8"></script>
+    <script type="text/babel">
+      var data = [
+        {
+          name : 'Bruno',
+          image: 'http://stories.barkpost.com/wp-content/uploads/2015/10/tom-brady-dog.jpg',
+          hobbies: ['Jumping' , 'Barking', 'Sleeping', 'Swimming']
+        },
+        {
+          name : 'Scruffy',
+          image: 'https://s-media-cache-ak0.pinimg.com/736x/72/be/c2/72bec2f26ffb59af4a1cd40146cf5480.jpg',
+          hobbies: ['Dancing' , 'Eating', 'Sleeping']
+        },
+        {
+          name : 'Ronny',
+          image: 'https://s-media-cache-ak0.pinimg.com/736x/4e/9c/9f/4e9c9f2f130fe97429b047cb7c43e2b6.jpg',
+          hobbies: ['Walking' , 'Biting', 'Howling', 'Sleeping']
+        },
+        {
+          name : 'Tommy',
+          image: 'https://s-media-cache-ak0.pinimg.com/originals/70/11/4c/70114c1bdd38a09f1b917b9a0d8f09f4.jpg',
+          hobbies: ['Eating' , 'Sleeping', 'Eating', 'Sleeping']
+        }
+      ];
+
+      var ProfileApp = React.createClass({
+        addProfile: function(profile){
+          this.state.profileData.push(profile);
+          this.setState({profileData: this.state.profileData});
+        },
+        getInitialState: function(){
+          return{
+            profileData: data
+          }
+        },
+        render: function(){
+          return (
+              <div>
+              <ProfileForm onChange={this.addProfile}/>
+              {this.state.profileData.map(profile =>
+                <div className="profile-box">
+                  <Profile name={profile.name} image={profile.image}/>
+                  <Hobbies hobbies={profile.hobbies}/>
+                </div>
+              )}
+              </div>
+          );
+        }
+      });
+
+      var Profile = React.createClass({
+        render: function(){
+          return(
+            <div className="profile">
+              <h1>{this.props.name}</h1>
+              <img src={this.props.image} width="250"/>
+            </div>
+          );
+        }
+      });
+
+      var Hobbies = React.createClass({
+        render: function(){
+          return(
+            <div className="hobbies">
+              <h3> My hobbies </h3>
+              <ul>
+                {this.props.hobbies.map(hobby => <li>{hobby}</li>)}
+              </ul>
+            </div>
+          );
+        }
+      });
+
+      var ProfileForm = React.createClass({
+        clearForm: function(){
+          document.getElementById('txtName').value = "";
+          document.getElementById('txtImage').value = "";
+          document.getElementById('txtHobbies').value = "";
+        },
+        addProfileHandler: function(){
+          if(typeof this.props.onChange == 'function'){
+            if(document.getElementById('txtName').value != null && document.getElementById('txtImage').value != null && document.getElementById('txtHobbies').value != null){
+              var nameVal = document.getElementById('txtName').value;
+              var imageVal = document.getElementById('txtImage').value;
+              var hobbiesVal = document.getElementById('txtHobbies').value.split(',');
+              var profile = {name: nameVal, image: imageVal, hobbies: hobbiesVal};
+              this.props.onChange(profile);
+              this.clearForm();
+            }
+          }
+        },
+        render:function(){
+          return(
+            <div className="profile-form">
+              <input type="text" placeholder="Enter name" id="txtName"/>
+              <input type="text" placeholder="Enter image path" id="txtImage"/>
+              <input type="text" placeholder="Enter comma separated hobbies. Eg:Cricket,Football" id="txtHobbies"/>
+              <button type="button" onClick={this.addProfileHandler}>Add Profile</button>
+            </div>
+          );
+        }
+      });
+
+      ReactDOM.render( <ProfileApp />, document.getElementById('profile-wrapper'));
+    </script>
+  </body>
+</html>
